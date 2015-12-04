@@ -15,7 +15,7 @@ else
     output=$(ssh hcal904daq01 $0)
     if [ -z "$output" ]; then
 	echo 'email sent' >&2
-	mail -s 'logger_information' yw5mj@virginia.edu joseph.mariano@cern.ch<<EOF
+	mail -s 'logger_information' yw5mj@virginia.edu <<EOF
 The logger on hcal904daq01 is crashed
 The logger is restarted from $HOSTNAME
 

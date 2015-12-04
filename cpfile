@@ -3,10 +3,10 @@ runhand(){
     echo '>> analyzing file:' $1
     cmsRun h2testbeamanalyzer_cfgbk.py $1 >/dev/null 
     isfi=$(lsof|grep $1)
+    root -l -q -b "plotPulseProfile.cc(\"${1:20:3}\")" >/dev/null 
+    root -l -q -b "plotCapIDvsBXProfile.cc(\"${1:20:3}\")" >/dev/null 
+    echo '>> file' $1 analyzed
     if [ -z "$isfi" ];then
-	root -l -q -b "plotPulseProfile.cc(\"${1:20:3}\")" >/dev/null 
-	root -l -q -b "plotCapIDvsBXProfile.cc(\"${1:20:3}\")" >/dev/null 
-	echo '>> file' $1 analyzed
 	rm *${1:20:3}.root
     fi
 }
