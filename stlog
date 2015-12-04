@@ -1,0 +1,31 @@
+#! /bin/bash
+
+if [ "$HOSTNAME" == 'vmepc-e1x07-06-01' ];then
+    isrun=`ps ux|grep quadrantlog.py|grep -v grep`
+    if [ -z "$isrun" ]; then
+	date >&2
+	echo -e '\nNo log_teststand.py is running' >&2
+	echo -e 'restarting log_teststand.py\n' >&2
+	cd ~/hcal_teststand_scripts
+	screen -dm -S logger bash -c ". configuration/setup_904.sh;(python -u quadrantlog.py -s 5 >>logger.txt 2>>logger.log)"
+    else
+	echo -e '\nlog_teststand.py is running'
+    fi
+else
+    output=$(ssh hcal904daq01 $0)
+    if [ -z "$output" ]; then
+	echo 'email sent' >&2
+	mail -s 'logger_information' yw5mj@virginia.edu joseph.mariano@cern.ch<<EOF
+The logger on hcal904daq01 is crashed
+The logger is restarted from $HOSTNAME
+
+======LOGGING INFORMATION=======
+$(tail ~/hcal_teststand_scripts/logger.txt)
+
+======CRASH INFORMATION=========
+$(tail ~/hcal_teststand_scripts/logger.log)
+EOF
+    else
+	echo $output
+    fi
+fi
