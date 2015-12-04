@@ -35,6 +35,7 @@ fi
 set -e
 cd /afs/cern.ch/user/y/yanchu/work/cms904/CMSSW_7_5_0_pre5/src/HFcommissioning/Analysis/test
 eval `scramv1 runtime -sh`
+echo '>> set CMSSW environment successfully'
 set +e
 if [ "$1" == "-s" ]
 then
