@@ -19,6 +19,14 @@ runcpfile(){
 	echo '>> copying file: '
 	scp cms904usr:./B904* ~/work/public/cms904/
 	ssh cms904usr 'rm ./B904*'
+	echo '>> sending email'
+	mail -s 'LED data' yw5mj@virginia.edu<<EOF
+found LED data file:
+$st
+
+Data has been copied to yanchuwang.cern.ch
+Analyzing is in process
+EOF
 	for f in $st
 	do
 	    runhand $f &
