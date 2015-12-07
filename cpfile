@@ -1,18 +1,25 @@
 #! /bin/bash
 runhand(){
+    logtime=$(date)
     echo '>> analyzing file:' $1
     cmsRun h2testbeamanalyzer_cfgbk.py $1 >/dev/null 
-    isfi=$(lsof|grep $1)
-    root -l -q -b "plotPulseProfile.cc(\"${1:20:3}\")" >/dev/null 
-    root -l -q -b "plotCapIDvsBXProfile.cc(\"${1:20:3}\")" >/dev/null 
+    root -l -q -b "plotPulseProfile.cc(\"${1:17:6}\")" >/dev/null 
+    root -l -q -b "plotCapIDvsBXProfile.cc(\"${1:17:6}\")" >/dev/null 
     echo '>> file' $1 analyzed
+    cat > ~/www/904LED/run_${1:17:6}/run.log<<EOF
+LED run data file: 
+       hcal904daq01:/tmp/$1
+generated at: 
+       $logtime
+EOF
+    isfi=$(lsof|grep $1)
     if [ -z "$isfi" ];then
-	rm *${1:20:3}.root
+	rm *${1:17:6}.root
     fi
 }
 
 runcpfile(){
-    st=$(ssh cms904usr bin/cpLED $1|grep B904)
+    st=$(ssh cms904usr bin/cpLED |grep B904)
     if [ -n "$st" ]
     then
 	date
@@ -39,17 +46,24 @@ then
     scp stlog cpLED cms904usr:bin/
     exit
 fi
+if [ "$1" == "-s" ]
+then
+    if [ -z "$2" ]
+    then
+	stm=$(date -d @$(($(date +%s)-86400)) +%m%d%H%M)
+    else
+	stm=$2
+    fi
+    ssh cms904usr touch -t $stm bin/cpLED
+    ssh cms904usr 'ssh hcal904daq01 touch /tmp/timecheck.log'
+    exit
+fi
 
 set -e
 cd /afs/cern.ch/user/y/yanchu/work/cms904/CMSSW_7_5_0_pre5/src/HFcommissioning/Analysis/test
 eval `scramv1 runtime -sh`
 echo '>> set CMSSW environment successfully'
 set +e
-if [ "$1" == "-s" ]
-then
-    runcpfile $((24*60))
-    exit
-fi
 
 while :
 do

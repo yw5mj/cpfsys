@@ -1,13 +1,10 @@
 #! /bin/bash
 if [ "$HOSTNAME" == 'vmepc-e1x07-06-01' ];then
-    if [ -z $1 ]
-    then
-	tocp=$(find /tmp -newer $0 2>/dev/null |grep B904_Integration)	
-	touch $0
-    else
-	tocp=$(find /tmp -cmin -$1 2>/dev/null |grep B904_Integration)
-    fi
-    if [ -n "$tocp" ];then
+    newfile=$(find /tmp -newer $0 2>/dev/null)	    
+    isend=$(echo "$newfile" |grep timecheck.log)	    
+    tocp=$(echo "$newfile" |grep B904_Integration)	
+    touch $0
+    if [ -n "$isend" ]&&[ -n "$tocp" ];then
 	echo "moving file:"
 	for fl in $tocp
 	do
