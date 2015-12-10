@@ -2,5 +2,5 @@
 if [ -z "$(screen -ls|grep cpfile)" ]
 then
     echo starting cpfile
-    screen -dm -S cpfile bash -c "./cpfile 2>cpfile.log"
+    screen -dm -S cpfile ./cpfile
 fi
